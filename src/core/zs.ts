@@ -1,4 +1,4 @@
-import z, { ZodType } from 'zod';
+import { z, type ZodType } from 'zod';
 import { SafeStorage, StorageType } from '@/types/type';
 
 /**
@@ -9,13 +9,14 @@ import { SafeStorage, StorageType } from '@/types/type';
  * @template Schema - A Zod schema type
  * @property {string} key - The storage key used to identify the stored value
  * @property {Schema} schema - The Zod schema used for validation
- * @property {z.infer<Schema>} defaultValue - The default value if no data is found
+ * @property {z.input<Schema>} defaultValue - The default value (schema INPUT type) used by
+ *   init() and returned by get() with onFailure: 'default'
  * @property {StorageType} [storage] - The storage type (e.g., "local" or "session"), defaults to "local"
  */
 export type ZsConfig<Schema extends ZodType> = {
   key: string;
   schema: Schema;
-  defaultValue: z.infer<Schema>;
+  defaultValue: z.input<Schema>;
   storage?: StorageType;
 };
 
@@ -24,11 +25,11 @@ export type ZsConfig<Schema extends ZodType> = {
  *
  * @template Schema The Zod schema type
  * @param {ZsConfig<Schema>} config - Storage configuration
- * @returns {SafeStorage<z.infer<Schema>>} SafeStorage configuration object
+ * @returns {SafeStorage<z.output<Schema>, z.input<Schema>>} SafeStorage configuration object
  */
 export const zs = <Schema extends ZodType>(
   config: ZsConfig<Schema>
-): SafeStorage<z.infer<Schema>> => {
+): SafeStorage<z.output<Schema>, z.input<Schema>> => {
   return {
     key: config.key,
     value: config.schema,

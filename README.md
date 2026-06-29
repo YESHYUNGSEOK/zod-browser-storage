@@ -76,13 +76,29 @@ Retrieves and validates data from storage.
 
 **Parameters:**
 
-- `storage` (SafeStorage<T>): Storage configuration
+- `storage` (SafeStorage): Storage configuration
 - `options.onFailure` ('null' | 'default' | 'throw', optional): Error handling behavior
   - `'null'`: Returns `null` on failure (default)
   - `'default'`: Returns `defaultValue` on failure
-  - `'throw'`: Throws an exception on failure
+  - `'throw'`: Throws on failure — the original `ZodError` (with `.issues` / `.flatten()`) for
+    schema validation failures, or a `SafeStorageError` for JSON parse failures
 
-**Returns:** `T | null` - Validated data or null
+**Returns:** The validated value (schema output type), or `null`
+
+> **SSR / non-browser / absent key:** When there is no value to validate — Web Storage is
+> unavailable (server-side rendering, non-browser runtimes, or storage blocked), or the key is
+> simply absent — `get()` does **not** throw. It returns `null`, or `defaultValue` with
+> `onFailure: 'default'`. So it is safe to call during the first/server render.
+
+> **Detecting the failure cause:** prefer `err instanceof SafeStorageError` to identify
+> parse/serialization/write failures; treat everything else as a Zod validation error. Relying on
+> `err instanceof z.ZodError` requires the consumer and this library to share a single `zod`
+> instance (a duplicate `zod` in the bundle breaks cross-realm `instanceof`).
+
+> **Nullable schemas:** `get()` returns `null` for three distinct states — key absent, a
+> validly-stored `null`, and a failed read with `onFailure: 'null'`. With a nullable schema,
+> `get(s) ?? s.defaultValue` will replace a deliberately-stored `null` with the default; branch
+> on the value explicitly if you need to tell these apart.
 
 **Example:**
 
@@ -99,14 +115,25 @@ const data = zodStorage.get(userStorage, { onFailure: 'throw' });
 
 ### `zodStorage.set(storage, data)`
 
-Stores validated data in storage.
+Validates `data` against the schema, then stores it. Validation happens at **runtime**, not just
+compile time — so untyped (`any`/JS) callers and structural constraints (`min`/`max`/`regex`/
+`refine`) are enforced on write too.
 
 **Parameters:**
 
-- `storage` (SafeStorage<T>): Storage configuration
-- `data` (T): Data to store
+- `storage` (SafeStorage): Storage configuration
+- `data`: Data to store (schema **input** type)
 
 **Returns:** `void`
+
+**Throws:**
+
+- The original `ZodError` when `data` fails schema validation (nothing is written).
+- A `SafeStorageError` when serialization fails (circular reference, BigInt) or the storage
+  write fails (e.g. `QuotaExceededError`, Safari private mode).
+
+> **SSR / non-browser:** `set()` (and `clear()` / `init()`) is a silent no-op when Web Storage
+> is unavailable.
 
 ### `zodStorage.clear(storage)`
 
@@ -321,6 +348,27 @@ const upperCaseStorage = zs({
   defaultValue: ''
 });
 ```
+
+> **Transform / coerce schemas:** For schemas whose input differs from their output
+> (`.transform()`, `z.coerce.*`, `.pipe()`), `set()` accepts the **input** type and `get()`
+> returns the **output** type. The raw input is stored and re-parsed on read, so the round-trip
+> is correct:
+>
+> ```typescript
+> const lenStorage = zs({
+>   key: 'word',
+>   schema: z.string().transform((s) => s.length), // input: string, output: number
+>   defaultValue: 'abc',
+> });
+>
+> zodStorage.set(lenStorage, 'hello'); // accepts string (input)
+> zodStorage.get(lenStorage); // returns 5 (output)
+> ```
+>
+> Note: with `onFailure: 'default'`, `get()` returns the raw `defaultValue` (the **input** type),
+> which is not re-parsed — so for transform schemas the `'default'` result is the input type, not
+> the output type. `set(storage, undefined)` stores the resolved value for `.default()` schemas and
+> removes the key for `.optional()` schemas.
 
 ## TypeScript
 
