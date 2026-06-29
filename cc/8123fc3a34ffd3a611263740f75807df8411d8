@@ -1,0 +1,64 @@
+.changeset/ssr-safety-and-write-validation.md
+  s_8697a6dfdc1028::t_85f7c4aa7ea2d8 1-11,16-24
+  s_8697a6dfdc1028::t_ae509989e711e2 12-15
+src/utils/getStorageObject.ts
+  s_8697a6dfdc1028::t_7727e4f97651a5 4-9,11-17
+src/core/zodStorage.ts
+  s_8697a6dfdc1028::t_813b4e68087d06 22-23,25,39-40,46-48,50,99-102,162-164,167,184-186,189
+  s_8697a6dfdc1028::t_9aba874c8dce94 128-130
+  s_8697a6dfdc1028::t_410bc82d9b2c00 3,20,49,58-60,62,66,68,70-74,76,79,81-84,86-88,90,94,97,106,110-113,119,131-132,142-154,171-173,180,182,190,194,199
+  s_8697a6dfdc1028::t_fa0318e4f5a2b9 105
+  s_8697a6dfdc1028::t_1ec1b36926364a 5-14,18-19,27-37,41-45,56-57,64-65,67,95-96,109,120-127,133-141,159-160,175,181
+  s_8697a6dfdc1028::t_5837945ad750de 114-118
+  s_8562589f58a715::t_d6b3edff9b1598 4,174
+src/core/errors.ts
+  s_8697a6dfdc1028::t_a01206a3eb2d84 1-17
+README.md
+  s_8697a6dfdc1028::t_93a3d14b544956 352-366,372
+  s_8697a6dfdc1028::t_bccab16302aa4e 367-371
+  s_8697a6dfdc1028::t_02d738ec7a59a8 88-91,93-96
+  s_8697a6dfdc1028::t_45f38c4c97faa9 79,83-87,97-101
+  s_8697a6dfdc1028::t_b9e6d061bf8754 118-120,124-125,129-136
+  s_8562589f58a715::t_de12673589fdd4 137
+src/core/__tests__/zodStorage.contract.test.ts
+  s_8697a6dfdc1028::t_6dddb1ca767e26 1-51,56-192
+  s_8697a6dfdc1028::t_fa0318e4f5a2b9 52-55
+  s_8697a6dfdc1028::t_004db40c84e8dd 193-329
+src/types/type.ts
+  s_8697a6dfdc1028::t_76324a6128b21c 9,26,47-48
+  s_8697a6dfdc1028::t_a6900e5591c153 1,11-16,19,21-23,25,29,31,33-34
+src/index.ts
+  s_8697a6dfdc1028::t_57f5a2a6af8681 3
+src/core/__tests__/zodStorage.ssr.test.ts
+  s_8697a6dfdc1028::t_5cdb8ffcbb1ff1 1-52
+src/core/__tests__/types.test-d.ts
+  s_8697a6dfdc1028::t_222b693b342376 29-40
+  s_8697a6dfdc1028::t_58e39429556e14 1-28,41-45
+src/core/zs.ts
+  s_8697a6dfdc1028::t_e1e1df96e05bf8 1,12-13,19
+  s_8697a6dfdc1028::t_b3d859c39d05f2 28,32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "cc8123fc3a34ffd3a611263740f75807df8411d8",
+  "prompts": {},
+  "sessions": {
+    "s_8562589f58a715": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "aa6c058b-4a69-479d-aea7-c5d11b8f3413",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yeshyungseok <eric.nohhyungseok@gmail.com>"
+    },
+    "s_8697a6dfdc1028": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd3655b6-1da9-4b52-bc27-4b9fffe91bbd",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "yeshyungseok <eric.nohhyungseok@gmail.com>"
+    }
+  }
+}
